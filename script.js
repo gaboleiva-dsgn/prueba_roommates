@@ -18,7 +18,8 @@ app.listen(PORT, () => {
     console.log(`Servidor corriendo por el puerto ${PORT}`);
 });
 
-import { agregarRoommate } from './modulos/modulos.js';
+import { agregarRoommate } from './modulos/roommates.js';
+// import { agregarGasto } from './modulos/gastos.js';
 
 app.use(express.json());
 
@@ -34,7 +35,7 @@ app.post('/roommate', async (req, res) => {
             fs.writeFileSync('roommates.json', '{"roommates": []}', 'utf8');
         };
         const result = await agregarRoommate();
-        res.send("Roommate creado con éxito!!");
+        res.send("Roommate creado con éxito!!", result);
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -43,4 +44,39 @@ app.post('/roommate', async (req, res) => {
 app.get('/roommates', (req, res) => {
     const { roommates } = JSON.parse(fs.readFileSync("roommates.json", "utf8"));
     res.send(roommates);
+});
+
+app.post('/gasto', async (req, res) => {
+    try {
+        // Verificamos que el archivo gastos.json existe, si no existe lo creamos con un arreglo vacío
+        if (!fs.existsSync("gastos.json")) {
+            fs.writeFileSync('gastos.json', '{"gastos": []}', 'utf8');
+        };
+        // const result = await agregarGasto();
+        console.log("Esto es req.body: ", req.body);
+        const { nombre, comentario, monto } = req.body;
+        const gasto = {
+            nombre,
+            comentario,
+            monto,
+        };
+        const gastosJSON = JSON.parse(fs.readFileSync("gastos.json", "utf8"));
+        const gastos = gastosJSON.gastos;
+        gastos.push(gasto);
+        fs.writeFileSync("gastos.json", JSON.stringify({ gastos }));
+        res.send("Gasto agregado con existo!!");
+    } catch (error) {
+        console.log("Como que no existe?");
+        res.status(500).send(error.message);
+    }
+});
+
+app.get('/gastos', (req, res) => {
+    const { gastos } = JSON.parse(fs.readFileSync("gastos.json", "utf8"));
+    res.send(gastos);
+});
+
+// ruta generica
+app.get("*", (req, res) => {
+    res.send("Esta página no existe!!");
 });
