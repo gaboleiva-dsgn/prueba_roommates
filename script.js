@@ -29,6 +29,10 @@ app.get('/', (req, res) => {
 
 app.post('/roommate', async (req, res) => {
     try {
+        // Verificamos que el archivo roommates.json existe, si no existe lo creamos con un arreglo vacío
+        if (!fs.existsSync("roommates.json")) {
+            fs.writeFileSync('roommates.json', '{"roommates": []}', 'utf8');
+        };
         const result = await agregarRoommate();
         res.send("Roommate creado con éxito!!");
     } catch (error) {
