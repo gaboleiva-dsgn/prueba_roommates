@@ -8,13 +8,18 @@ const agregarRoommate = async (req, res) => {
     const randomRoommate = data.results[0];
 
     const idRandom = uuidv4().slice(24);
+    const nameRoommmate = randomRoommate.name.first;
+    let debe = 0;
+    let recibe = 0;
+    let total = 0;
 
     //Crea una variable usuario con los valores id, nombre, debe y recibe del usuario random.
     const roommate = {
         id: idRandom,
-        nombre: randomRoommate.name.first,
-        debe: '',
-        recibe: '',
+        nombre: nameRoommmate,
+        debe: debe,
+        recibe: recibe,
+        total: total,
     }
 
     // Ingresa al arreglo roommates, el userRandom.

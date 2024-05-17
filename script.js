@@ -21,7 +21,7 @@ app.listen(PORT, () => {
 
 // Importamos los módulos que vamos a utilizar
 import { agregarRoommate } from './modulos/roommates.js';
-// import { agregarGasto } from './modulos/gastos.js';
+import { actualizarGasto } from './modulos/gastos.js';
 
 // Middlewares
 app.use(express.json());
@@ -36,10 +36,10 @@ app.post('/roommate', async (req, res) => {
     try {
         // Verificamos que el archivo roommates.json existe, si no existe lo creamos con un arreglo vacío
         if (!fs.existsSync("roommates.json")) {
-            fs.writeFileSync('roommates.json', '{"roommates": []}', 'utf8');
+            fs.writeFileSync('roommates.json', '{"roommates":[]}', 'utf8');
         };
         const result = await agregarRoommate();
-        res.send("Roommate creado con éxito!!", result);
+        res.status(200).send("Roommate creado con éxito!!");
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -47,7 +47,7 @@ app.post('/roommate', async (req, res) => {
 
 // ruta para obtener todos los roommates del archivo roommates.json
 app.get('/roommates', (req, res) => {
-    const { roommates } = JSON.parse(fs.readFileSync("roommates.json", "utf8"));
+    const roommates = JSON.parse(fs.readFileSync("roommates.json", "utf8"));
     res.send(roommates);
 });
 
@@ -59,20 +59,21 @@ app.post('/gasto', async (req, res) => {
             fs.writeFileSync('gastos.json', '{"gastos": []}', 'utf8');
         };
         const idGasto = uuidv4().slice(24);
-        // const result = await agregarGasto();
-        // console.log("Esto es req.body: ", req.body);
-        const { nombre, comentario, monto } = req.body;
+        console.log("Esto es req.body: ", req.body);
+        const { roommate, descripcion, monto } = req.body;
         const gasto = {
             id: idGasto,
-            nombre,
-            comentario,
+            roommate,
+            descripcion,
             monto,
         };
         const gastosJSON = JSON.parse(fs.readFileSync("gastos.json", "utf8"));
         const gastos = gastosJSON.gastos;
         gastos.push(gasto);
         fs.writeFileSync("gastos.json", JSON.stringify({ gastos }));
+        await actualizarGasto();
         res.send("Gasto agregado con existo!!");
+        
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -80,26 +81,30 @@ app.post('/gasto', async (req, res) => {
 
 // ruta para obtener todos los gastos del archivo gastos.json
 app.get('/gastos', (req, res) => {
-    const { gastos } = JSON.parse(fs.readFileSync("gastos.json", "utf8"));
+    const gastos = JSON.parse(fs.readFileSync("gastos.json", "utf8"));
     res.send(gastos);
 });
 
 // ruta para ditar un gasto del archivo gastos.json
 app.put('/gasto', async (req, res) => {
     try {
-    const { id, nombre, comentario, monto } = req.body;
-    console.log("El valor de req.params es: ", req.body);
-    const gasto = { id, nombre, comentario, monto  };
-    const gastosJSON = JSON.parse(fs.readFileSync("gastos.json", "utf8"));
-    const gastos = gastosJSON.gastos;
-    gastosJSON.gastos = gastos.map((b) => b.id === id? gasto : b);
-    fs.writeFileSync("gastos.json", JSON.stringify(gastosJSON));
-    res.send("Gasto actualizado con éxito!!");
+        const { id } = req.query;
+        const { roommate, descripcion, monto } = req.body;
+        const gasto = { id, roommate, descripcion, monto };
+        if (!id || !roommate || !descripcion || !monto) {
+            res.status(400).send("Debe proporcionar un ID, roommate, descripción y monto");
+            return;
+        }
+        const gastosJSON = JSON.parse(fs.readFileSync("gastos.json", "utf8"));
+        const gastos = gastosJSON.gastos;
+        gastosJSON.gastos = gastos.map((b) => b.id === id ? gasto : b);
+        fs.writeFileSync("gastos.json", JSON.stringify(gastosJSON));
+        res.send("Gasto actualizado con éxito!!");
     } catch (error) {
         res.status(500).send(error.message);
         console.log("BARRANCO!!!!!!!!");
     }
-    
+
 });
 
 // ruta para eliminar un gasto del archivo gastos.json

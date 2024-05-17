@@ -151,6 +151,7 @@ Articulos de limpieza</textarea
         const res = await fetch("http://localhost:3000/roommates");
         const data = await res.json();
         roommates = data.roommates;
+        console.log(roommates);
       };
       const getGastos = async () => {
         const res = await fetch("http://localhost:3000/gastos");
@@ -213,6 +214,9 @@ Articulos de limpieza</textarea
         const monto = Number($("#monto").val());
         await fetch("http://localhost:3000/gasto", {
           method: "POST",
+          headers: {
+          'Content-Type': 'application/json'
+        },
           body: JSON.stringify({
             roommate: roommateSelected,
             descripcion,
@@ -235,6 +239,9 @@ Articulos de limpieza</textarea
         const monto = Number($("#montoModal").val());
         await fetch("http://localhost:3000/gasto?id=" + gastoEditing, {
           method: "PUT",
+          headers: {
+          'Content-Type': 'application/json'
+        },
           body: JSON.stringify({
             roommate: roommateSelected,
             descripcion,
