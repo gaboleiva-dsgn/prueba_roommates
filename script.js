@@ -99,6 +99,7 @@ app.put('/gasto', async (req, res) => {
         const gastos = gastosJSON.gastos;
         gastosJSON.gastos = gastos.map((b) => b.id === id ? gasto : b);
         fs.writeFileSync("gastos.json", JSON.stringify(gastosJSON));
+        await actualizarGasto();
         res.send("Gasto actualizado con éxito!!");
     } catch (error) {
         res.status(500).send(error.message);
@@ -115,6 +116,7 @@ app.delete('/gasto', async (req, res) => {
         const gastos = gastosJSON.gastos;
         gastosJSON.gastos = gastos.filter((b) => b.id !== id);
         fs.writeFileSync("gastos.json", JSON.stringify(gastosJSON));
+        await actualizarGasto();
         res.send("Gasto eliminado con éxito!!");
     } catch (error) {
         res.status(500).send(error.message);
