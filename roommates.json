@@ -1,1 +1,1 @@
-{"roommates":[{"id":"2fe3374f4d5b","nombre":"Julio","debe":7500,"recibe":7500,"total":0},{"id":"5a2492f3ff2d","nombre":"Gustas","debe":7500,"recibe":7500,"total":0}]}
+{"roommates":[{"id":"2fe3374f4d5b","nombre":"Julio","debe":57500,"recibe":0,"total":-57500},{"id":"5a2492f3ff2d","nombre":"Gustas","debe":0,"recibe":57500,"total":57500}]}

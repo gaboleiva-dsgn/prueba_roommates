@@ -16,13 +16,12 @@ const actualizarGasto = async (req, res) => {
             const montoPorRoommate = gasto.monto / roommates.length;
             roommates.forEach(roommate => {
                 if (roommate.nombre == gasto.roommate) {
-                    roommate.recibe += montoPorRoommate * (roommates.length - 1);
+                    roommate.recibe += montoPorRoommate * (roommates.length - 1)
                 } else {
                     roommate.debe += montoPorRoommate;
                 }
             });
         });
-
         roommates.forEach(roommate => {
             roommate.total = roommate.recibe - roommate.debe;
         });

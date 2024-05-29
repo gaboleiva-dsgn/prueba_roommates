@@ -4,12 +4,14 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import cors from 'cors';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Creamos una instancia de express
 const app = express();
+// const cors = cors();
 
 // Escuchamos el puerto 3000
 const PORT = process.env.PORT || 3000;
@@ -27,9 +29,9 @@ import { actualizarGasto } from './modulos/gastos.js';
 app.use(express.json());
 
 // ruta raíz que devuelve con sendFile el archivo index.html
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'index.html'));
+// });
 
 // ruta para agregar un roommate al archivo roommates.json 
 app.post('/roommate', async (req, res) => {
