@@ -11,7 +11,8 @@ const __dirname = path.dirname(__filename);
 
 // Creamos una instancia de express
 const app = express();
-// const cors = cors();
+
+app.use(cors());
 
 // Escuchamos el puerto 3000
 const PORT = process.env.PORT || 3000;
